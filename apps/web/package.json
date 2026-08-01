@@ -1,0 +1,48 @@
+{
+  "name": "@kiln/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo .next",
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@kiln/agents": "workspace:*",
+    "@kiln/billing": "workspace:*",
+    "@kiln/config": "workspace:*",
+    "@kiln/contracts": "workspace:*",
+    "@kiln/connectors": "workspace:*",
+    "@kiln/db": "workspace:*",
+    "@kiln/design-engine": "workspace:*",
+    "@kiln/jobs": "workspace:*",
+    "@kiln/mcp": "workspace:*",
+    "@kiln/mirror": "workspace:*",
+    "@kiln/observability": "workspace:*",
+    "@kiln/playbooks": "workspace:*",
+    "@kiln/quality": "workspace:*",
+    "@kiln/runtime": "workspace:*",
+    "@kiln/tools": "workspace:*",
+    "@kiln/ui": "workspace:*",
+    "@trpc/client": "11.18.0",
+    "@trpc/server": "11.18.0",
+    "drizzle-orm": "0.45.2",
+    "next": "15.5.22",
+    "react": "19.0.8",
+    "react-dom": "19.0.8",
+    "superjson": "2.2.6",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "tailwindcss": "4.3.3",
+    "@tailwindcss/postcss": "4.3.3",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

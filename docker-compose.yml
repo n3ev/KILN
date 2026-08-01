@@ -1,0 +1,55 @@
+# Optional. KILN runs fully offline without Docker via embedded PGlite; this
+# file exists for developers who want the production-shaped services locally.
+#
+#   docker compose up -d
+#   DATABASE_URL=postgresql://kiln:kiln@localhost:5432/kiln pnpm db:push
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kiln-postgres
+    environment:
+      POSTGRES_USER: kiln
+      POSTGRES_PASSWORD: kiln
+      POSTGRES_DB: kiln
+    ports:
+      - "5432:5432"
+    volumes:
+      - kiln-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kiln -d kiln"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: kiln-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: kiln-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: kiln
+      MINIO_ROOT_PASSWORD: kilnkiln
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - kiln-minio:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  kiln-pgdata:
+  kiln-minio:

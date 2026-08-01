@@ -1,0 +1,40 @@
+{
+  "name": "@kiln/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": [
+      "./*.ts",
+      "./*/index.ts"
+    ],
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo .next",
+    "replay": "tsx scripts/replay.ts"
+  },
+  "dependencies": {
+    "@kiln/agents": "workspace:*",
+    "@kiln/config": "workspace:*",
+    "@kiln/contracts": "workspace:*",
+    "@kiln/db": "workspace:*",
+    "@kiln/jobs": "workspace:*",
+    "@kiln/model-gateway": "workspace:*",
+    "@kiln/observability": "workspace:*",
+    "@kiln/playbooks": "workspace:*",
+    "@kiln/quality": "workspace:*",
+    "@kiln/tools": "workspace:*",
+    "zod": "3.25.76",
+    "drizzle-orm": "0.45.2"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

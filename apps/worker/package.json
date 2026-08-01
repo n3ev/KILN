@@ -1,0 +1,47 @@
+{
+  "name": "@kiln/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": [
+      "./*.ts",
+      "./*/index.ts"
+    ],
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo .next",
+    "demo": "MOCK_STREAM_JITTER_MS=0 tsx scripts/demo.ts",
+    "replay": "MOCK_STREAM_JITTER_MS=0 tsx scripts/replay.ts",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@kiln/agents": "workspace:*",
+    "@kiln/billing": "workspace:*",
+    "@kiln/config": "workspace:*",
+    "@kiln/connectors": "workspace:*",
+    "@kiln/contracts": "workspace:*",
+    "@kiln/db": "workspace:*",
+    "@kiln/jobs": "workspace:*",
+    "@kiln/mirror": "workspace:*",
+    "@kiln/model-gateway": "workspace:*",
+    "@kiln/observability": "workspace:*",
+    "@kiln/playbooks": "workspace:*",
+    "@kiln/runtime": "workspace:*",
+    "@kiln/tools": "workspace:*",
+    "@kiln/vault": "workspace:*",
+    "drizzle-orm": "0.45.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

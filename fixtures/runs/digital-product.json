@@ -1,0 +1,8 @@
+{
+  "playbookId": "digital-product",
+  "archetype": "digital",
+  "seed": "10000000-0000-4000-8000-000000000002:digital-product",
+  "oneLiner": "Sell a project-planning template system to independent editorial designers.",
+  "expectedArtifacts": ["venture_brief", "validation_report", "unit_economics", "strategy_memo", "brand_system", "product_catalogue", "content_set", "compliance_report", "policy_set", "storefront_build", "growth_plan", "quality_report", "operating_digest"],
+  "qualityGateCount": 10
+}

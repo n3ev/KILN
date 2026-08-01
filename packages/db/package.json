@@ -1,0 +1,40 @@
+{
+  "name": "@kiln/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./*": [
+      "./*.ts",
+      "./*/index.ts"
+    ],
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo .next",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "tsx scripts/push.ts",
+    "db:reset": "tsx scripts/reset.ts",
+    "db:studio": "drizzle-kit studio",
+    "seed": "tsx scripts/seed.ts"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "0.5.4",
+    "@kiln/config": "workspace:*",
+    "@kiln/contracts": "workspace:*",
+    "drizzle-orm": "0.45.2",
+    "postgres": "3.4.9",
+    "zod": "3.25.76",
+    "@kiln/model-gateway": "workspace:*"
+  },
+  "devDependencies": {
+    "drizzle-kit": "0.31.10",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

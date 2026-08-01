@@ -1,0 +1,39 @@
+{
+  "name": "@kiln/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./tokens": "./src/tokens.ts",
+    "./*": [
+      "./*.ts",
+      "./*/index.ts"
+    ],
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo .next",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@kiln/config": "workspace:*",
+    "@kiln/contracts": "workspace:*",
+    "@kiln/db": "workspace:*",
+    "@kiln/observability": "workspace:*",
+    "@kiln/tools": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "drizzle-orm": "0.45.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

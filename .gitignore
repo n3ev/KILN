@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.next/
+.turbo/
+out/
+coverage/
+*.tsbuildinfo
+
+# Local environment
+.env
+.env.local
+.env.*.local
+
+# Zero-config local database (PGlite data directory) and dev key material
+.kiln/
+
+# Test output
+playwright-report/
+test-results/
+
+# OS noise
+.DS_Store
+Thumbs.db

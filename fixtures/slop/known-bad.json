@@ -1,0 +1,10 @@
+[
+  { "id": "generic-ad-copy", "text": "Unlock the power of a world-class workflow and take your studio to the next level.", "expectedRule": "banned-phrase" },
+  { "id": "machine-cadence", "text": "The clay is fired at twelve hundred degrees. The glaze is mixed by hand each morning. The kiln is opened after two full days.", "expectedRule": "sentence-length-uniformity" },
+  { "id": "dash-density", "text": "One change — then another — then a third — all before lunch.", "expectedRule": "em-dash-density" },
+  { "id": "tricolon-list", "text": "Choose brass, steel, and oak. Add cards, labels, and tape. Pick red, blue, or green.", "expectedRule": "tricolon-density" },
+  { "id": "rhetorical-opener", "text": "Still losing receipts? This folder keeps each month in a separate pocket.", "expectedRule": "rhetorical-question-opener" },
+  { "id": "placeholder", "text": "Email {{first_name}} when the order marked TBD is ready.", "expectedRule": "placeholder-residue" },
+  { "id": "body-emoji", "text": "The second batch leaves the studio on Friday 🔥", "expectedRule": "emoji-in-body" },
+  { "id": "listicle", "text": "# First\n\nOne note.\n\n## Second\n\n## Third\n\n## Fourth", "expectedRule": "heading-body-ratio" }
+]

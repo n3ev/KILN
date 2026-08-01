@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`golden sandbox runs > digital-product remains complete, deterministic, and launch-clear 1`] = `
+{
+  "brand_system": "4dfb74ee6a65bfba2af4d33fce5f3e4bd3f0caf0f474132aff8f1b08d68b3809",
+  "compliance_report": "7b17f30e87dbec5d6e39dfc39f86577430d109134f2baec20aac2bf4286aa459",
+  "content_set": "70f6e43e93048387d3186782d90ed282f3d1be30605ef87de79226721baa84e2",
+  "growth_plan": "8250dbe32c0dc12b7809739b27c68f76c2fac629b50338daa342a42636615e93",
+  "operating_digest": "95281bf7e78649b118beaa23e3a699872823ac5fcd326cf3c6980779f408b1fd",
+  "policy_set": "2b16dfb3d3e16a57f8774777f3c4f1609e1d9ae3088d98521000c5ad8b8ba23b",
+  "product_catalogue": "5e754612e5a9518474524b153836c9a018df7da3023ace1707b52b402a05e602",
+  "quality_report": "c85c03fa420cb05488bbe8b1a373967d78da71d6aa559257f89b14d0049dd041",
+  "storefront_build": "83fbbd8f2aa8d2f7d53ecc488221e221397a91ffa593d13ab7179ef0ad752e75",
+  "strategy_memo": "4ace4706fbfa55665afdc9353a1dbb46cfb5ea00090e59b20f5fa2799aeac795",
+  "unit_economics": "a38102c8621bb50361166df6f395f8d7b91bad129e92b810d03added7b25b9c3",
+  "validation_report": "e8d7394d6cd1a47d40c2a8a1f4a1d88fbad82f173a74fb50c726ac6dbc0df328",
+  "venture_brief": "fc31492283fa833e7b434f784ac82bf15be6159e9496b9e4bb24156248f91eb1",
+}
+`;
+
+exports[`golden sandbox runs > local-service remains complete, deterministic, and launch-clear 1`] = `
+{
+  "brand_system": "51edc4906ba1705a4e3616be35035496688ffaf4aa3bca7fc04a75c7c64c4019",
+  "compliance_report": "9922f42b5e4b4cc30f0a2230c388cac52bfeaba487fc749b7e0b23a35753d4e1",
+  "content_set": "afd4933467ec5a7249b8127f0dffda43f05bd519e3e718f0e5dbbb064621992a",
+  "growth_plan": "afbb4b1acb3e1d999ba19b4355c0bf1f78f6c07dd8b42ee36f58e973184e8bbb",
+  "operating_digest": "fe2bca08489287f78644c271feb6307415ae4f241e1f95bab20320f796854167",
+  "policy_set": "69354c7e36a065f49e0a470dcff90150b49ee344e8f43190f34abf0994593e6e",
+  "product_catalogue": "492474ea6e96fb1f5309ff37f3d39cef13f98ece86908db8414779a34b279242",
+  "quality_report": "b40a309c319b28954f2bfd5c3a7930f683aec1403f6bcb84e43a68e3d2e68a54",
+  "storefront_build": "407b3e9a1cbd00e9047c54646534f1ca68f19d0f4c563c2b59671d5174e280d8",
+  "strategy_memo": "09764df738b55ff18eb8aec57dea0c7cd117517e599255edc18b424be56c9385",
+  "unit_economics": "b63138887460352257f8e71cddb24c94d935b27b9fd45f5200ea2939fd5f4e9c",
+  "validation_report": "bffbb11a7c2e0d035c046435714014da6fac96d0508f0512684ed531636cf028",
+  "venture_brief": "10d3670a97521117ae17339f6fcd721bf06cd4edfceb4a7c17aaceded6519647",
+}
+`;
+
+exports[`golden sandbox runs > physical-shopify remains complete, deterministic, and launch-clear 1`] = `
+{
+  "brand_system": "24c647482dd46367657af0e1a304ec0bae70ade3d94550fad3cf77fa17ffa429",
+  "compliance_report": "670b871f50c398572a6f3c2dc8411e3db0055db577bad8688ac0a42052bba808",
+  "content_set": "cecea6a76d92e675d6b313359f5227f854c140b70b330718f6ac12bb534d7617",
+  "fulfilment_tradeoff": "c3b36910a1a9a21f3229e28a071ee3f29566212cf0434e374f8ae771393bea03",
+  "growth_plan": "400e8990ff544b45de0b0729d7767bc795fc7abe10d14ff65a3507e84feae02d",
+  "operating_digest": "2d39d3af88168b58ededfbd8ce382b119fdd44ab3d6109fb39e0906bd56774a6",
+  "policy_set": "d9f1c5d0a89b1a5fccafae32eea32c62b0df9ad2b9d48b5f9fd585b6a299e4e6",
+  "product_catalogue": "9f94d9d65edcec493aa49c9bc166c2774296006da72ccecc77eac8a2314d7d12",
+  "quality_report": "f9ca180b43c1b989f35aaaf63b9f0da86375769aca6274bce90692e93e1e9771",
+  "storefront_build": "659fa6b24cd9aecae21fa81bfa0d207824f576ca7e537b48a4088e07d9da6c88",
+  "strategy_memo": "7a72867c1c0cf310a0ec2b19b26f47ced09e5bad4a91d0fc8e274e323c3c3bbe",
+  "supply_plan": "8753f81f05def160ef4ab0efc3e03f04ef0193211c09e12d90f6a2d53831129b",
+  "unit_economics": "8fe4ffc128124a76acfc1cfd0a0404b168a2b9f5055ce1eb50ab5f1747ff9d53",
+  "validation_report": "6cdc4fe823314cc50f3c0954eaec364ab7fd349c0c1b51f4721316d274ee9ace",
+  "venture_brief": "40a2f6de61b9fbc320f2965e7e2ecffb892c075a109cdc52ae644757add043c9",
+}
+`;

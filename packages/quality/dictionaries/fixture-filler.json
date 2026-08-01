@@ -1,0 +1,8 @@
+{
+  "note": "Verbatim fallback sentences emitted by the mock model provider (packages/model-gateway/templates.ts FALLBACK_SENTENCES). Kept in sync by tests/contracts/fixture-filler-parity.test.ts. A sandbox run that reaches a quality gate carrying these strings has produced scaffolding, not copy, and must not clear.",
+  "sentences": [
+    "Recorded during the offline build; no live source was consulted.",
+    "Derived from the brief rather than from market data.",
+    "Synthetic fixture value produced for this sandboxed run."
+  ]
+}

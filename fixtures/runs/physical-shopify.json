@@ -1,0 +1,8 @@
+{
+  "playbookId": "physical-shopify",
+  "archetype": "physical",
+  "seed": "10000000-0000-4000-8000-000000000001:physical-shopify",
+  "oneLiner": "Sell durable ceramic herb planters to apartment renters with sunny balconies.",
+  "expectedArtifacts": ["venture_brief", "validation_report", "unit_economics", "strategy_memo", "brand_system", "product_catalogue", "supply_plan", "fulfilment_tradeoff", "content_set", "compliance_report", "policy_set", "storefront_build", "growth_plan", "quality_report", "operating_digest"],
+  "qualityGateCount": 11
+}

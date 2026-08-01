@@ -1,0 +1,16 @@
+{
+  "key": "example-recorded-response",
+  "agentId": "interviewer",
+  "taskKind": "fixture-format-example",
+  "recordedAt": "2026-08-01T00:00:00.000Z",
+  "provider": "mock",
+  "model": "mock:synthetic",
+  "result": {
+    "text": "A recorded response is selected only when its computed fixture key matches.",
+    "toolCalls": [],
+    "finishReason": "stop",
+    "usage": { "promptTokens": 12, "completionTokens": 15 },
+    "model": "mock:synthetic",
+    "provider": "mock"
+  }
+}

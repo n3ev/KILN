@@ -1,0 +1,111 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-08-01",
+  "notes": "Versioned on purpose. Adding an entry changes what the product will ship, so it is a reviewable change with a stated reason, not a constant buried in a source file. `phrase` is matched literally on word boundaries, case-insensitively. `pattern` is a JavaScript regex source, used where the tell is a shape rather than a string.",
+  "entries": [
+    { "phrase": "elevate your", "why": "Ad-copy filler. Says nothing about what the product does.", "instead": "Name the specific improvement." },
+    { "phrase": "unlock the power", "why": "Metaphor doing the work a fact should do.", "instead": "State the capability plainly." },
+    { "phrase": "in today's fast-paced world", "why": "Throat-clearing. Every reader skips it.", "instead": "Delete and start at the second sentence." },
+    { "phrase": "game-changer", "why": "Unfalsifiable praise.", "instead": "Say what changed and for whom." },
+    { "phrase": "game changer", "why": "Unfalsifiable praise.", "instead": "Say what changed and for whom." },
+    { "phrase": "seamlessly", "why": "Claims an absence of friction the reader cannot verify.", "instead": "Describe the steps that were removed." },
+    { "phrase": "revolutionise", "why": "Overclaim.", "instead": "Compare against the incumbent concretely." },
+    { "phrase": "revolutionize", "why": "Overclaim.", "instead": "Compare against the incumbent concretely." },
+    { "phrase": "take it to the next level", "why": "Vague aspiration.", "instead": "Name the level and the metric." },
+    { "phrase": "look no further", "why": "Assumes a search the reader may not be on.", "instead": "Lead with the offer." },
+    { "phrase": "dive into", "why": "Model tic.", "instead": "Use a plain verb: read, try, open." },
+    { "phrase": "delve", "why": "Model tic. Almost nobody writes this unprompted.", "instead": "Use: look at, examine, go through." },
+    { "phrase": "tapestry", "why": "Decorative metaphor with no content.", "instead": "Describe the actual thing." },
+    { "phrase": "testament to", "why": "Inflates evidence that is usually absent.", "instead": "Cite the evidence itself." },
+    { "phrase": "nestled in", "why": "Estate-agent register.", "instead": "State the location." },
+    { "phrase": "at the end of the day", "why": "Filler that delays the point.", "instead": "Delete." },
+    { "phrase": "robust solution", "why": "Two words that survive any deletion test.", "instead": "Name what it withstands." },
+    { "phrase": "cutting-edge", "why": "Unverifiable and dated within a year.", "instead": "Name the technique." },
+    { "phrase": "cutting edge", "why": "Unverifiable and dated within a year.", "instead": "Name the technique." },
+    { "phrase": "world-class", "why": "Self-awarded credential.", "instead": "Cite a comparison or drop it." },
+    { "phrase": "world class", "why": "Self-awarded credential.", "instead": "Cite a comparison or drop it." },
+    { "phrase": "curated collection", "why": "Every collection claims curation.", "instead": "Say who chose it and on what basis." },
+    { "phrase": "meticulously crafted", "why": "Craft claim with no craft in it.", "instead": "Describe one step of the process." },
+    { "phrase": "perfect for those who", "why": "Fake segmentation.", "instead": "Name the buyer and their situation." },
+    { "phrase": "journey", "why": "Overused for any sequence of events.", "instead": "Say what actually happens, in order." },
+    { "phrase": "elevate", "why": "Rarely means anything concrete in commercial copy.", "instead": "Name the change." },
+    { "phrase": "unleash", "why": "Action-movie register.", "instead": "Use a plain verb." },
+    { "phrase": "harness the power of", "why": "Filler around a noun.", "instead": "Use the noun." },
+    { "phrase": "in the realm of", "why": "Model tic.", "instead": "Use: in, for, among." },
+    { "phrase": "navigate the complexities", "why": "Says difficulty without naming it.", "instead": "Name the specific difficulty." },
+    { "phrase": "look and feel", "why": "Hedge covering both without committing.", "instead": "Pick one and be specific." },
+    { "phrase": "state-of-the-art", "why": "Unverifiable.", "instead": "Name the specification." },
+    { "phrase": "bespoke", "why": "Devalued by overuse outside tailoring.", "instead": "Say what is made to order." },
+    { "phrase": "artisanal", "why": "Category marker, not information.", "instead": "Describe who makes it and how." },
+    { "phrase": "unparalleled", "why": "Superlative with no comparison set.", "instead": "Compare to something named." },
+    { "phrase": "transformative", "why": "Overclaim.", "instead": "State the before and after." },
+    { "phrase": "empower", "why": "Corporate filler when applied to customers.", "instead": "Say what they can now do." },
+    { "phrase": "leverage", "why": "Verb form is business filler.", "instead": "Use: use." },
+    { "phrase": "synergy", "why": "Empty.", "instead": "Name the combined effect." },
+    { "phrase": "best-in-class", "why": "Self-awarded credential.", "instead": "Cite the class and the ranking." },
+    { "phrase": "one-stop shop", "why": "Cliché.", "instead": "List what is covered." },
+    { "phrase": "peace of mind", "why": "Sells a feeling instead of a guarantee.", "instead": "State the actual guarantee." },
+    { "phrase": "rest assured", "why": "Instructs the reader how to feel.", "instead": "Give the fact that reassures." },
+    { "phrase": "we are thrilled", "why": "Performed enthusiasm.", "instead": "State the news." },
+    { "phrase": "we are excited to announce", "why": "Performed enthusiasm.", "instead": "State the news." },
+    { "phrase": "boasts", "why": "Product copy verb nobody uses in speech.", "instead": "Use: has, includes." },
+    { "phrase": "whopping", "why": "Tabloid register.", "instead": "Give the number." },
+    { "phrase": "plethora", "why": "Model tic.", "instead": "Use: many, or give the count." },
+    { "phrase": "myriad", "why": "Model tic.", "instead": "Use: many, or give the count." },
+    { "phrase": "ever-evolving", "why": "Filler modifier.", "instead": "Delete." },
+    { "phrase": "fast-paced", "why": "Filler modifier.", "instead": "Delete." },
+    { "phrase": "sleek and modern", "why": "Pairs two empty adjectives.", "instead": "Describe one visual specific." },
+    { "phrase": "let's face it", "why": "False intimacy.", "instead": "Delete." },
+    { "phrase": "the truth is", "why": "Implies the preceding text was not.", "instead": "Delete." },
+    { "phrase": "here's the thing", "why": "Blog filler.", "instead": "Delete." },
+
+    {
+      "pattern": "\\bwhether\\s+you(?:'re|\\s+are)\\s+a\\b[^.]{0,80}?\\bor\\s+(?:a|an)\\b",
+      "id": "whether-youre-a-or-a",
+      "why": "The 'whether you're a X or a Y' construction pretends to segment while addressing everyone.",
+      "instead": "Address one buyer. The other one is not reading."
+    },
+    {
+      "pattern": "\\bit(?:'s|\\s+is)\\s+not\\s+just\\b[^.]{0,80}?,\\s*it(?:'s|\\s+is)\\b",
+      "id": "not-just-x-its-y",
+      "why": "The 'it's not just X, it's Y' reversal is the single most recognisable model cadence.",
+      "instead": "Make the positive claim once, without the setup."
+    },
+    {
+      "pattern": "\\bnot\\s+only\\b[^.]{0,100}?\\bbut\\s+also\\b",
+      "id": "not-only-but-also",
+      "why": "Symmetrical construction that signals generated prose.",
+      "instead": "Split into two sentences, or drop the weaker half."
+    },
+    {
+      "pattern": "\\bmore\\s+than\\s+just\\b",
+      "id": "more-than-just",
+      "why": "Same reversal shape as 'not just X, it's Y'.",
+      "instead": "State what it is."
+    },
+    {
+      "pattern": "\\bin\\s+(?:a|an)\\s+world\\s+(?:where|of)\\b",
+      "id": "in-a-world-where",
+      "why": "Film-trailer opener.",
+      "instead": "Start with the buyer's actual situation."
+    },
+    {
+      "pattern": "\\b(?:that's|thats)\\s+where\\s+\\w+\\s+comes\\s+in\\b",
+      "id": "thats-where-x-comes-in",
+      "why": "Formulaic pivot from problem to product.",
+      "instead": "Introduce the product without announcing the pivot."
+    },
+    {
+      "pattern": "\\bsay\\s+goodbye\\s+to\\b",
+      "id": "say-goodbye-to",
+      "why": "Infomercial register.",
+      "instead": "Name what is removed."
+    },
+    {
+      "pattern": "\\bwe(?:'ve|\\s+have)\\s+got\\s+you\\s+covered\\b",
+      "id": "weve-got-you-covered",
+      "why": "Cliché reassurance.",
+      "instead": "State the guarantee."
+    }
+  ]
+}
