@@ -17,4 +17,6 @@ if [[ -n "${DATABASE_URL:-}" ]]; then
     --filter @kiln/web --filter @kiln/worker --filter @kiln/mcp run dev
 fi
 
+echo "No DATABASE_URL: starting the web process alone against embedded PGlite." >&2
+echo "Runs created from intake will queue with no worker to execute them." >&2
 exec pnpm --filter @kiln/web dev

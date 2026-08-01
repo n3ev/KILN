@@ -43,11 +43,35 @@ if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
     exit 1
   fi
   services="web + worker + MCP"
-else
-  echo "Docker is unavailable; using embedded Postgres and starting the web process only." >&2
-  echo "Install/start Docker to run the production-shaped worker and MCP processes together." >&2
+elif [[ -n "${DATABASE_URL:-}" ]]; then
+  # An operator-supplied Postgres (Supabase, a managed instance, a local
+  # install) is the same production-shaped topology as docker-compose, minus
+  # Redis and MinIO. Prompt-1 uses neither: the job queue is Postgres-backed.
+  echo "Docker is unavailable, but DATABASE_URL is set; using it." >&2
+  echo "Redis and MinIO are not started." >&2
+  services="web + worker + MCP"
+elif [[ "${KILN_ALLOW_EMBEDDED:-0}" == "1" ]]; then
+  # Embedded PGlite takes an exclusive lock on its data directory, so exactly
+  # one process can hold it. That is a web-only environment, and the operator
+  # has now said in as many words that it is what they want.
+  echo "Docker is unavailable; KILN_ALLOW_EMBEDDED=1, so using embedded Postgres." >&2
+  echo "This starts the web process only: PGlite admits one process, so no" >&2
+  echo "worker and no MCP server, and no Redis or MinIO. A run created from" >&2
+  echo "intake will sit in the queue with nothing to execute it." >&2
   unset DATABASE_URL
-  services="web (embedded fallback)"
+  services="web only (embedded fallback)"
+else
+  echo "Docker is not available, so KILN cannot start Postgres, Redis, and MinIO." >&2
+  echo "Install and start Docker, then re-run \`pnpm bootstrap\`. Pointing" >&2
+  echo "DATABASE_URL at any Postgres 16+ works too." >&2
+  echo >&2
+  echo "To develop against the embedded database instead, re-run with" >&2
+  echo "KILN_ALLOW_EMBEDDED=1 — but read what that costs first: PGlite admits" >&2
+  echo "one process, so you get the web app alone, with no worker to execute" >&2
+  echo "runs. Bootstrap fails here rather than exiting 0, because an" >&2
+  echo "unattended run that reports success while delivering half a stack is" >&2
+  echo "worse than one that fails." >&2
+  exit 1
 fi
 
 export MODEL_PROVIDER="${MODEL_PROVIDER:-mock}"
