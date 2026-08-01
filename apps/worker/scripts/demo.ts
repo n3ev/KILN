@@ -90,6 +90,9 @@ async function main(): Promise<void> {
     const run = rowsOf<{ status: string }>(
       await tx.execute(sql`SELECT status::text AS status FROM runs WHERE id = ${runId}`),
     )[0];
+    const venture = rowsOf<{ status: string }>(
+      await tx.execute(sql`SELECT status::text AS status FROM ventures WHERE id = ${ventureId}`),
+    )[0];
     const artifactRows = rowsOf<{ type: string; content: unknown }>(
       await tx.execute(sql`
         SELECT DISTINCT ON (type) type, content
@@ -127,11 +130,17 @@ async function main(): Promise<void> {
         WHERE run_id = ${runId} AND category = 'model'
       `),
     )[0]?.count ?? 0;
-    return { run, artifactRows, checkpoints, events, streamedTokens, invocations, modelLedgerEntries };
+    return { run, venture, artifactRows, checkpoints, events, streamedTokens, invocations, modelLedgerEntries };
   });
 
   if (verification.run?.status !== "succeeded") {
     throw new Error(`Persisted run status is ${verification.run?.status ?? "missing"}`);
+  }
+  // The venture was inserted as `building` above; a finished build is the only
+  // thing that moves it. Asserted here so the demo proves the transition rather
+  // than only the artifacts it depends on.
+  if (verification.venture?.status !== "live") {
+    throw new Error(`Venture ended the run as ${verification.venture?.status ?? "missing"}, not live`);
   }
   const byType = new Map(verification.artifactRows.map((artifact) => [artifact.type, artifact.content]));
   const missing = declaredArtifacts(physicalShopify).filter((type) => !byType.has(type));
@@ -151,7 +160,8 @@ async function main(): Promise<void> {
   console.log(
     `Artifacts: ${declaredArtifacts(physicalShopify).length}; ` +
       `checkpoints: ${verification.checkpoints}; events: ${verification.events}; ` +
-      `streamed tokens: ${verification.streamedTokens}; model ledger: ${verification.modelLedgerEntries}; quality cleared: true`,
+      `streamed tokens: ${verification.streamedTokens}; model ledger: ${verification.modelLedgerEntries}; ` +
+      `quality cleared: true; venture: live`,
   );
   console.log(`Run Theatre: ${url}`);
 }

@@ -2,6 +2,34 @@ import type { RunEvent } from "@kiln/contracts";
 import type { Database } from "@kiln/db";
 import { sql } from "drizzle-orm";
 
+/**
+ * Promotes the venture a finished build belongs to.
+ *
+ * A completed build is the only thing that makes a venture live: intake writes
+ * it as `building` and nothing else moves it. The quality condition restates
+ * CLAUDE.md §11.5 — "a run cannot reach `live` with any gate failing" — here
+ * rather than inheriting it from the orchestrator's launch guard, because this
+ * statement is the only writer of the transition and an invariant enforced two
+ * modules away is an invariant nobody can check. It reads the newest quality
+ * report rather than any of them, so a superseded pass cannot promote a run
+ * whose final report failed.
+ *
+ * `status = 'building'` scopes it to the build that created the venture: a
+ * later operate-phase run against a `live` or `paused` venture changes nothing.
+ */
+async function promoteVentureToLive(tx: Database, runId: string): Promise<void> {
+  await tx.execute(sql`
+    UPDATE ventures SET status = 'live'
+    WHERE id = (SELECT venture_id FROM runs WHERE id = ${runId})
+      AND status = 'building'
+      AND (
+        SELECT content ->> 'clearedForLaunch' FROM artifacts
+        WHERE run_id = ${runId} AND type = 'quality_report'
+        ORDER BY version DESC LIMIT 1
+      ) = 'true'
+  `);
+}
+
 /** Maintains disposable read models beside the append-only event write. */
 export async function projectRunEvent(
   tx: Database,
@@ -30,6 +58,7 @@ export async function projectRunEvent(
       return;
     case "run.succeeded":
       await tx.execute(sql`UPDATE runs SET status = 'succeeded', ended_at = ${at} WHERE id = ${runId}`);
+      await promoteVentureToLive(tx, runId);
       return;
     case "run.failed":
       await tx.execute(sql`UPDATE runs SET status = 'failed', ended_at = ${at} WHERE id = ${runId}`);
