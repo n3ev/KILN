@@ -1,7 +1,7 @@
 import { rmSync } from "node:fs";
 import { config } from "@kiln/config";
 import { sql } from "drizzle-orm";
-import { asServiceRole, closeDb, embeddedDataDir, getDb } from "../client.js";
+import { closeDb, embeddedDataDir, getDb } from "../client.js";
 
 /**
  * `pnpm db:reset` — destroys all data and returns to an empty schema.
@@ -28,9 +28,13 @@ async function main(): Promise<void> {
 
   console.log(`Dropping schemas on ${new URL(cfg.DATABASE_URL ?? "").host}...`);
   const db = await getDb();
-  await asServiceRole(db, async (tx) => {
+  // Deliberately not asServiceRole. This is owner DDL, so RLS does not apply
+  // to it, and on a Postgres that has never been migrated `service_role` does
+  // not exist yet — which made the very first reset against a fresh database
+  // fail on `SET LOCAL ROLE` before it could drop anything.
+  await db.transaction(async (tx) => {
     await tx.execute(sql`DROP SCHEMA IF EXISTS kiln CASCADE`);
-    await tx.execute(sql`DROP SCHEMA public CASCADE`);
+    await tx.execute(sql`DROP SCHEMA IF EXISTS public CASCADE`);
     await tx.execute(sql`CREATE SCHEMA public`);
   });
   await closeDb();

@@ -40,13 +40,13 @@ function listSql(dir: string): string[] {
 export async function applySchema(dbDir = join(repoRoot(), "packages", "db")): Promise<SchemaApplyResult> {
   const db = await getDb();
 
-  await execScript(`CREATE TABLE IF NOT EXISTS kiln_migrations (
+  await execScript(`CREATE TABLE IF NOT EXISTS public.kiln_migrations (
     name text PRIMARY KEY,
     applied_at timestamptz NOT NULL DEFAULT now()
   );`);
 
   const applied = new Set<string>();
-  for (const row of rowsOf<{ name: string }>(await db.execute(sql`SELECT name FROM kiln_migrations`))) {
+  for (const row of rowsOf<{ name: string }>(await db.execute(sql`SELECT name FROM public.kiln_migrations`))) {
     applied.add(row.name);
   }
 
@@ -70,7 +70,7 @@ export async function applySchema(dbDir = join(repoRoot(), "packages", "db")): P
     for (const stmt of statements(readFileSync(join(migrationsDir, file), "utf8"))) {
       await execScript(stmt);
     }
-    await db.execute(sql`INSERT INTO kiln_migrations (name) VALUES (${file})`);
+    await db.execute(sql`INSERT INTO public.kiln_migrations (name) VALUES (${file})`);
     migrationsApplied.push(file);
   }
 

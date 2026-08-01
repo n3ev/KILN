@@ -74,7 +74,21 @@ async function createEmbedded(): Promise<Driver> {
 
 async function createRemote(url: string): Promise<Driver> {
   const postgres = (await import("postgres")).default;
-  const client = postgres(url, { max: config().PGPOOL_MAX, onnotice: () => {} });
+  const client = postgres(url, {
+    max: config().PGPOOL_MAX,
+    onnotice: () => {},
+    // Pin the search path instead of inheriting Postgres's `"$user", public`.
+    // KILN's own `kiln` schema holds the RLS helper functions, and docker-
+    // compose connects as the role `kiln`, so `"$user"` resolves to that
+    // schema and every unqualified name silently changes meaning once the
+    // policies have run. It cost a second `pnpm db:push` against the same
+    // database: `CREATE TABLE IF NOT EXISTS kiln_migrations` made a second,
+    // empty bookkeeping table in `kiln` and the migrations all replayed.
+    // `SET LOCAL ROLE authenticated` would have moved it again. Embedded
+    // PGlite connects as `postgres`, where no such schema exists, which is
+    // why this never showed up offline.
+    connection: { search_path: "public" },
+  });
   return {
     db: drizzlePostgres(client, { schema }),
     close: async () => client.end({ timeout: 5 }),

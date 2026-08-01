@@ -27,10 +27,10 @@
     "@electric-sql/pglite": "0.5.4",
     "@kiln/config": "workspace:*",
     "@kiln/contracts": "workspace:*",
+    "@kiln/model-gateway": "workspace:*",
     "drizzle-orm": "0.45.2",
     "postgres": "3.4.9",
-    "zod": "3.25.76",
-    "@kiln/model-gateway": "workspace:*"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "drizzle-kit": "0.31.10",
