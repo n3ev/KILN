@@ -11,7 +11,8 @@ import { PLAYBOOKS } from "../../packages/playbooks/index.ts";
 import { buildRegistry, contentHash, type ToolContext } from "../../packages/tools/index.ts";
 import { fold, runPlaybook, type OrchestratorDeps, type RunContextState } from "../../packages/runtime/index.ts";
 import { slopLint } from "../../packages/quality/index.ts";
-import { describe, expect, it } from "vitest";
+import { logger } from "../../packages/observability/index.ts";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 const Golden = z.object({
@@ -43,6 +44,32 @@ function evidence() {
     },
   };
 }
+
+/**
+ * Context assembly warns rather than throws while an agent is only slightly
+ * over budget, which is the right runtime behaviour and a useless signal in
+ * CI — the mock's own prose pushed two agents over for a while and the warning
+ * scrolled past on every run. Catching it here makes the golden runs the place
+ * that notices.
+ */
+let contextWarnings: { agentId: unknown; approxTokens: unknown; budget: unknown }[] = [];
+
+beforeEach(() => {
+  contextWarnings = [];
+  vi.spyOn(logger, "warn").mockImplementation((message, fields) => {
+    if (message === "context exceeds the agent's budget") {
+      contextWarnings.push({
+        agentId: fields?.["agentId"],
+        approxTokens: fields?.["approxTokens"],
+        budget: fields?.["budget"],
+      });
+    }
+  });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("golden sandbox runs", () => {
   for (const playbook of PLAYBOOKS) {
@@ -149,6 +176,10 @@ describe("golden sandbox runs", () => {
       expect(quality.results.every((result) => result.passed)).toBe(true);
       expect(events.some((event) => event.type === "agent.token")).toBe(true);
       expect(events.some((event) => event.type === "run.succeeded")).toBe(true);
+      // Every agent stayed inside its declared context budget. The mock's own
+      // filler is what this catches: it is upstream of every artifact, so when
+      // it grows it grows every downstream agent's context at once.
+      expect(contextWarnings).toEqual([]);
       expect(Object.fromEntries([...writes].map(([type, value]) => [type, contentHash(value)]))).toMatchSnapshot();
     });
   }

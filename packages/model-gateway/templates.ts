@@ -15,7 +15,6 @@ import { createRng, type Rng } from "./rng.js";
 
 const MATERIALS = ["stoneware", "brass", "oiled ash", "linen", "recycled aluminium", "cork", "porcelain", "waxed canvas"];
 const PLACES = ["Sheffield", "Leeds", "Porto", "Ghent", "Tallinn", "Bristol", "Aarhus", "Lisbon"];
-const TRADES = ["ceramicist", "bike mechanic", "bookbinder", "framer", "furniture maker", "tailor"];
 const BUYERS = [
   "a nurse on rotating shifts who reads before bed",
   "a freelance designer billing four retainer clients",
@@ -31,33 +30,135 @@ const OBJECTIONS = [
 ];
 const CHANNELS = ["search", "instagram", "local directories", "craft markets", "email", "word of mouth"];
 
-/** Sentences of varied length, so synthetic prose does not trip the linter. */
-function paragraph(rng: Rng, minWords: number): string {
-  const openers = [
-    `Made from ${rng.pick(MATERIALS)} in ${rng.pick(PLACES)}.`,
-    `Each one is finished by hand by a ${rng.pick(TRADES)}.`,
-    `The first batch ran to ${rng.int(40, 400)} units.`,
-    `It weighs ${rng.int(90, 1400)}g.`,
-  ];
-  const middles = [
-    `The buyer is usually ${rng.pick(BUYERS)}, which shapes almost every decision about it.`,
-    `Two things matter to that buyer: how long it lasts and whether it can be repaired rather than replaced.`,
-    `It costs ${rng.int(9, 140)} to make and sells for roughly three times that, before shipping.`,
-    `Returns run at about ${rng.int(2, 9)} percent, mostly sizing.`,
-    `Lead time from order to doorstep is ${rng.int(2, 14)} days.`,
-  ];
-  const closers = [`That is the whole of it.`, `Nothing else about it is unusual.`, `It works.`];
+/**
+ * Cadence.
+ *
+ * The slop linter blocks three consecutive sentences whose word counts sit
+ * within 10% of each other, and it only considers sentences of five words or
+ * more. The previous generator satisfied that by accident: it cycled one pool
+ * of similar, long sentences, and the lengths happened not to line up. That
+ * made every paragraph expensive — long enough to push two agents over their
+ * context budget on the golden run — and shortening the pool moved the problem
+ * rather than fixing it, because a shorter pool repeats sooner and repetition
+ * is what the rule is looking for.
+ *
+ * So the variation is structural. Sentences live in three disjoint length
+ * bands, and a paragraph walks a cadence that never takes three in a row from
+ * one band. Any window of three therefore spans at least two bands, and the
+ * bands are far enough apart that the ratio can never fall inside the
+ * tolerance: 8 to 11 words is 37%, 16 to 20 is 25%. The rule cannot fire, at
+ * any length, for any seed — and the paragraph can be much shorter, because it
+ * no longer needs bulk to stay irregular.
+ *
+ * Substitutions are single tokens on purpose. A two-word material would change
+ * a sentence's length and take it out of its band, so the bands are asserted
+ * against the linter's own word counter in tests/contracts/mock-cadence.test.ts.
+ */
 
-  const parts = [rng.pick(openers)];
-  let words = parts[0]?.split(/\s+/).length ?? 0;
-  let middleIndex = rng.int(0, middles.length - 1);
-  while (words < minWords) {
-    const next = middles[middleIndex % middles.length] ?? middles[0] ?? "It works.";
-    parts.push(next);
-    words += next.split(/\s+/).length;
-    middleIndex++;
+/** Single-token substitutions, so a sentence's word count never moves. */
+const UNIT_MATERIALS = ["stoneware", "brass", "linen", "cork", "porcelain", "ash", "aluminium", "canvas"];
+const UNIT_TRADES = ["ceramicist", "bookbinder", "framer", "tailor", "welder", "upholsterer"];
+
+type Band = "short" | "medium" | "long";
+
+/** 5–8 words. Above the linter's five-word floor, so these still count. */
+const SHORT_LINES: readonly ((rng: Rng) => string)[] = [
+  (r) => `It weighs ${r.int(90, 1400)}g and ships flat.`,
+  (r) => `The ${r.pick(UNIT_MATERIALS)} version costs a little more.`,
+  () => `Every batch is checked twice.`,
+  (r) => `Stock moves in about ${r.int(2, 9)} weeks.`,
+  () => `We photograph the batch we ship.`,
+  (r) => `Returns sit near ${r.int(2, 9)} percent.`,
+  (r) => `The ${r.pick(UNIT_TRADES)} finishes each piece by hand.`,
+  (r) => `Dispatch runs ${r.int(2, 14)} working days.`,
+  () => `Nothing in this range is drop-shipped.`,
+  () => `The colour shifts between batches.`,
+];
+
+/** 11–16 words. */
+const MEDIUM_LINES: readonly ((rng: Rng) => string)[] = [
+  (r) => `The first batch ran to ${r.int(40, 400)} units and sold out in ${r.int(3, 20)} weeks.`,
+  (r) => `It costs ${r.int(9, 140)} to make and sells for roughly three times that.`,
+  (r) => `Lead time from order to doorstep is ${r.int(2, 14)} days across ${r.pick(PLACES)} and nearby.`,
+  () => `Two things matter to that buyer: how long it lasts and whether it repairs.`,
+  (r) => `The ${r.pick(UNIT_MATERIALS)} is cut in ${r.pick(PLACES)} and assembled in the same workshop.`,
+  () => `Most buyers order one, keep it for years, then order a second.`,
+  () => `We quote the real dispatch window before checkout rather than after it.`,
+  (r) => `The wear shows on the ${r.pick(UNIT_MATERIALS)} first, which is why we photograph it.`,
+  () => `Sizing is the point buyers raise first, so it leads the description.`,
+  (r) => `A repair costs ${r.int(8, 60)} and takes ${r.int(2, 9)} days, which beats replacing it.`,
+];
+
+/** 20–26 words. */
+const LONG_LINES: readonly ((rng: Rng) => string)[] = [
+  () => `The buyer is usually someone who reads the dimensions before the description, and that shapes almost every decision about how this is built.`,
+  (r) => `Made from ${r.pick(UNIT_MATERIALS)} in ${r.pick(PLACES)}, finished by a ${r.pick(UNIT_TRADES)} who has worked the same bench for ${r.int(4, 30)} years, and sold direct rather than through a shop.`,
+  (r) => `Returns run at about ${r.int(2, 9)} percent and almost all of them are sizing, so the size guide carries the measurements rather than a chart of letters.`,
+  (r) => `The unit cost sits at ${r.int(9, 140)} before shipping, which leaves enough margin to replace a damaged order without arguing about who was at fault.`,
+  (r) => `Most of the ${r.pick(UNIT_MATERIALS)} arrives in ${r.int(10, 90)} kilo batches from one supplier in ${r.pick(PLACES)}, and a second supplier is held in reserve for the same specification.`,
+  (r) => `Customers who buy twice tend to buy the same thing again rather than trading up, which is why the range stays at ${r.int(4, 20)} pieces.`,
+  () => `The finish is applied by hand and no two pieces match exactly, which is stated on the product page instead of being discovered on delivery.`,
+  () => `Orders placed before noon leave the same day, and anything after that waits until the next working day because the courier collects once.`,
+];
+
+const BANDS: Record<Band, readonly ((rng: Rng) => string)[]> = {
+  short: SHORT_LINES,
+  medium: MEDIUM_LINES,
+  long: LONG_LINES,
+};
+
+/**
+ * Every cadence is checked in tests/contracts/mock-cadence.test.ts for the one
+ * property that matters: no three consecutive entries — counting the wrap,
+ * since long paragraphs repeat the pattern — come from the same band.
+ */
+const CADENCES: readonly (readonly Band[])[] = [
+  ["long", "short", "medium"],
+  ["medium", "short", "long", "short"],
+  ["long", "medium", "short", "medium"],
+  ["short", "medium", "long", "medium", "short", "long"],
+];
+
+export const SENTENCE_BANDS = { SHORT_LINES, MEDIUM_LINES, LONG_LINES, CADENCES } as const;
+
+/**
+ * Builds a paragraph of at least `minWords` words and `minChars` characters,
+ * stopping before it passes `maxChars`.
+ *
+ * All three bounds are honoured in one pass. Generating a short paragraph and
+ * then concatenating a second one to reach a schema's `minLength` would join
+ * two independent cadences at an unchecked boundary, which is the one place
+ * three similar sentences could still meet. Stopping at `maxChars` matters for
+ * the opposite reason: overshooting and letting the caller slice the result
+ * leaves a half-finished sentence, and that is what the customer reads.
+ */
+function paragraph(rng: Rng, minWords: number, minChars = 0, maxChars = Number.POSITIVE_INFINITY): string {
+  const cadence = rng.pick([...CADENCES]);
+  // Each band is walked from a random offset and stepped forward, so a
+  // paragraph exhausts the band before it repeats a sentence. The old
+  // generator re-used the same five sentences every time it needed length,
+  // which put verbatim duplicates into every product description.
+  const cursors: Record<Band, number> = {
+    short: rng.int(0, SHORT_LINES.length - 1),
+    medium: rng.int(0, MEDIUM_LINES.length - 1),
+    long: rng.int(0, LONG_LINES.length - 1),
+  };
+
+  const parts: string[] = [];
+  let words = 0;
+  let chars = 0;
+  for (let i = 0; words < minWords || chars < minChars; i++) {
+    const band = cadence[i % cadence.length] ?? "medium";
+    const pool = BANDS[band];
+    const line = (pool[cursors[band] % pool.length] ?? pool[0])?.(rng) ?? "It works.";
+    cursors[band]++;
+    // One sentence always lands, even under an impossibly tight cap; the
+    // caller's clamp is the backstop for that.
+    if (parts.length > 0 && chars + line.length + 1 > maxChars) break;
+    parts.push(line);
+    words += (line.match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu) ?? []).length;
+    chars += line.length + 1;
   }
-  parts.push(rng.pick(closers));
   return parts.join(" ");
 }
 
@@ -71,6 +172,30 @@ export interface FieldHint {
 
 type Generator = (h: FieldHint) => string;
 
+/** Roughly six characters per word, spaces included. Used to fit a cap. */
+const CHARS_PER_WORD = 7;
+
+/**
+ * Word target for a `*description*` field.
+ *
+ * A product or service description has a hard floor: CLAUDE.md §11.5 and
+ * productDescriptionsGate both want 120+ words. But the same field name also
+ * covers `shortDescription` (300 chars) and `seo.description` (160), which used
+ * to be generated at 130 words and then chopped mid-sentence by the maxLength
+ * clamp — so the linter, the gallery, and the customer all saw a fragment. A
+ * declared cap is the field saying it is not that kind of description.
+ */
+function descriptionWords(h: FieldHint): number {
+  const cap = h.maxLength ?? Number.POSITIVE_INFINITY;
+  return cap < 130 * CHARS_PER_WORD ? Math.max(12, Math.floor(cap / CHARS_PER_WORD)) : 130;
+}
+
+/** Word target for prose fields with no length gate of their own. */
+function proseWords(h: FieldHint, target: number): number {
+  const cap = h.maxLength ?? Number.POSITIVE_INFINITY;
+  return cap < target * CHARS_PER_WORD ? Math.max(8, Math.floor(cap / CHARS_PER_WORD)) : target;
+}
+
 const BRAND_HEXES = [
   "#1c1b19", "#2f2a25", "#4a443c", "#6b6257", "#8a7f70", "#a89a86",
   "#c4b7a2", "#e2dbcf", "#f4f0e8", "#7d3f2c", "#3f5545", "#2b4655",
@@ -82,9 +207,9 @@ const STRING_TEMPLATES: readonly { match: RegExp; gen: Generator }[] = [
   { match: /^oneLiner$|^headline$|^title$|^positioningStatement$/i, gen: (h) =>
       `${h.rng.pick(["Hand-thrown", "Repaired", "Made-to-order", "Small-batch"])} ${h.rng.pick(MATERIALS)} goods from ${h.rng.pick(PLACES)}` },
   { match: /description/i, gen: (h) =>
-      paragraph(h.rng, Math.max(h.minLength ? h.minLength / 5 : 130, 130)) },
+      paragraph(h.rng, descriptionWords(h), h.minLength ?? 0, h.maxLength ?? Number.POSITIVE_INFINITY) },
   { match: /body|narrative|memo|rationale|reasoning|interpretation|why|detail/i, gen: (h) =>
-      paragraph(h.rng, Math.max(h.minLength ? h.minLength / 5 : 40, 40)) },
+      paragraph(h.rng, proseWords(h, 22), h.minLength ?? 0, h.maxLength ?? Number.POSITIVE_INFINITY) },
   { match: /objection/i, gen: (h) => h.rng.pick(OBJECTIONS) },
   { match: /channel/i, gen: (h) => h.rng.pick(CHANNELS) },
   { match: /portrait|customer|icp|buyer/i, gen: (h) => h.rng.pick(BUYERS) },
@@ -125,7 +250,7 @@ const STRING_TEMPLATES: readonly { match: RegExp; gen: Generator }[] = [
   // for this sandboxed run." straight into customer-facing artifact copy — and
   // the slop linter had no rule that could see it.
   { match: /excerpt|summary|note|basis|justification/i, gen: (h) =>
-      paragraph(h.rng, Math.max(h.minLength ? h.minLength / 5 : 30, 30)) },
+      paragraph(h.rng, proseWords(h, 15), h.minLength ?? 0, h.maxLength ?? Number.POSITIVE_INFINITY) },
   { match: /forWhom|competesIn/i, gen: (h) => h.rng.pick(BUYERS) },
   { match: /aspiresTo|primaryBet|positioning/i, gen: (h) =>
       `Win on ${h.rng.pick(["fit accuracy", "repair turnaround", "batch consistency", "delivery certainty"])} rather than on price.` },
@@ -142,7 +267,7 @@ const STRING_TEMPLATES: readonly { match: RegExp; gen: Generator }[] = [
   // Leaf keys that packages/runtime/prose.ts feeds to the slop linter. Every one
   // of these is customer-facing, so none may fall through to FALLBACK_SENTENCES.
   { match: /^copy$|^text$|^blocks?$|^messages?$|^components?$|^pages?$/i, gen: (h) =>
-      paragraph(h.rng, Math.max(h.minLength ? h.minLength / 5 : 40, 40)) },
+      paragraph(h.rng, proseWords(h, 22), h.minLength ?? 0, h.maxLength ?? Number.POSITIVE_INFINITY) },
   { match: /^subject$/i, gen: (h) =>
       `${h.rng.pick(["Your order is packed", "The next batch opens Friday", "One question about your delivery", "A smaller size is back"])}` },
   { match: /^condition$|^wouldChangeIf$|^tradeoff$/i, gen: (h) =>
@@ -150,11 +275,11 @@ const STRING_TEMPLATES: readonly { match: RegExp; gen: Generator }[] = [
   { match: /returnsPolicy|^policies$|^policy$/i, gen: (h) =>
       `Return anything unused within ${h.rng.int(14, 60)} days and we pay the postage. Made-to-order pieces are exempt, and that is stated before checkout.` },
   { match: /digitalDeliverables|emailSequences|launchPosts|^services$|^products$/i, gen: (h) =>
-      paragraph(h.rng, Math.max(h.minLength ? h.minLength / 5 : 40, 40)) },
+      paragraph(h.rng, proseWords(h, 22), h.minLength ?? 0, h.maxLength ?? Number.POSITIVE_INFINITY) },
   { match: /^brief$|^revisedOneLiner$/i, gen: (h) =>
       `${h.rng.pick(["Hand-thrown", "Repaired", "Made-to-order", "Small-batch"])} ${h.rng.pick(MATERIALS)} goods from ${h.rng.pick(PLACES)}` },
   { match: /reason|locate|variable|label|revisitBy|workingName|tierName|^value$/i, gen: (h) =>
-      paragraph(h.rng, Math.max(h.minLength ? h.minLength / 5 : 24, 24)) },
+      paragraph(h.rng, proseWords(h, 12), h.minLength ?? 0, h.maxLength ?? Number.POSITIVE_INFINITY) },
 ];
 
 /**
@@ -183,11 +308,20 @@ export function synthString(hint: FieldHint): string {
   const template = STRING_TEMPLATES.find((t) => t.match.test(named));
   let value = template ? template.gen(hint) : hint.rng.pick(FALLBACK_SENTENCES);
 
+  // A one-line template (a SKU, an email address) under a long `minLength` is
+  // the only case left that needs padding. Append a whole paragraph rather than
+  // sentence fragments, so the added text carries its own cadence.
   if (hint.minLength !== undefined && value.length < hint.minLength) {
-    while (value.length < hint.minLength) value += ` ${paragraph(hint.rng, 20)}`;
+    value = `${value} ${paragraph(hint.rng, 0, hint.minLength - value.length)}`;
   }
   if (hint.maxLength !== undefined && value.length > hint.maxLength) {
-    value = value.slice(0, hint.maxLength).trimEnd();
+    // Backstop only — the generators fit the cap themselves. Prefer cutting at
+    // a sentence end so an over-long value degrades to shorter copy rather than
+    // to a fragment, but never below a declared minLength.
+    const clipped = value.slice(0, hint.maxLength).trimEnd();
+    const lastEnd = Math.max(clipped.lastIndexOf(". "), clipped.lastIndexOf("."));
+    const whole = lastEnd > 0 ? clipped.slice(0, lastEnd + 1) : clipped;
+    value = whole.length >= (hint.minLength ?? 0) ? whole : clipped;
   }
   return value;
 }
