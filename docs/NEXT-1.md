@@ -19,10 +19,11 @@ has **one expected failure** — the design gallery visual baseline. Do not
 
 ## Step 0 — history, before you touch a line
 
-The repo has **zero commits** and the working tree contains uncommitted work
-from the audit session. Commit the tree as-is first, in coherent slices, so
-there is something to bisect back to. Then, as its own commit, copy the build
-spec into the repo as `CLAUDE.md` — it currently lives outside the tree at
+History now exists: one import commit holding the whole tree, pushed to
+`github.com/n3ev/KILN`. Work in coherent commits from here.
+
+The outstanding piece is `CLAUDE.md`. Copy the build spec into the repo under
+that name, as its own commit — it currently lives outside the tree at
 `~/.config/Claude/local-agent-mode-sessions/.../outputs/KILN-one-shot-build-prompt.md`,
 and 50 source comments cite it by section number as normative.
 
