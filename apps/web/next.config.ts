@@ -27,9 +27,15 @@ const config: NextConfig = {
     // its `import.meta.url` asset URLs and Node then rejects the resulting URL
     // object while loading the WASM bundle. Force the Node build to use the
     // package's CommonJS entrypoint unchanged.
+    // The same caveat applies to postgres-js, and for the same reason: the
+    // import lives in @kiln/db, which is transpiled, so `serverExternalPackages`
+    // never sees it. It went unnoticed until DATABASE_URL was set for the first
+    // time, because with no URL the driver branch in client.ts is unreachable
+    // and webpack's bundled copy is never executed.
     if (isServer) {
       webpackConfig.externals.push({
         "@electric-sql/pglite": "commonjs @electric-sql/pglite",
+        postgres: "commonjs postgres",
       });
     }
     return webpackConfig;
