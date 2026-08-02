@@ -6,10 +6,12 @@ out/
 coverage/
 *.tsbuildinfo
 
-# Local environment
+# Local environment. Ignore every .env variant, then re-admit the template:
+# a `.env.bak` from editing credentials in place was previously untracked but
+# offerable, which is one `git add -A` away from committing a live key.
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Zero-config local database (PGlite data directory) and dev key material
 .kiln/
