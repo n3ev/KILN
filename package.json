@@ -25,6 +25,7 @@
     "db:studio": "pnpm --filter @kiln/db db:studio",
     "db:reset": "pnpm --filter @kiln/db db:reset",
     "seed": "pnpm --filter @kiln/db seed",
+    "model:smoke": "tsx scripts/model-smoke.ts",
     "demo:run": "pnpm --filter @kiln/worker demo",
     "run:replay": "pnpm --filter @kiln/worker replay",
     "clean": "turbo run clean && rm -rf node_modules"
