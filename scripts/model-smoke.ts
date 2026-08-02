@@ -49,6 +49,10 @@ try {
   console.log("no .env found; reading the ambient environment\n");
 }
 
+// A reachability probe is not agent output, and fixtures/model/ is the corpus
+// the mock provider replays from. Recording "Lisbon" into it helps nobody.
+process.env["MODEL_RECORD"] = "0";
+
 const cfg = config();
 
 console.log("configured provider   ", cfg.MODEL_PROVIDER);
