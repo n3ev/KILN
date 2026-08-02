@@ -1,3 +1,4 @@
+import "./load-env.js";
 import { rmSync } from "node:fs";
 import { config } from "@kiln/config";
 import { sql } from "drizzle-orm";

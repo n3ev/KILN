@@ -1,3 +1,4 @@
+import "./load-env.js";
 import { closeDb } from "../client.js";
 import { applySchema } from "../migrate.js";
 

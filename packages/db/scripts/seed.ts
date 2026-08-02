@@ -1,3 +1,4 @@
+import "./load-env.js";
 import { createHash } from "node:crypto";
 import {
   ARTIFACT_SCHEMAS,
